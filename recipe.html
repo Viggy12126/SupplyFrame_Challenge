@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Recipe app</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="d-flex" role="search">
+              <input id="input" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button id="search" class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container">
+        <h1>Welcome to my Recipe App</h1>
+        <div class="row recipeContent">
+
+       
+        <div class="card my-5 mx-5" style="width: 18rem;">
+            <img src="..." class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+
+        
+
+        </div>
+ <div class="d-flex justify-content-around">
+        <button type="button" class="btn btn-primary" id="previous">Previous</button>
+        <button type="button" class="btn btn-primary" id="next">Next</button>
+    </div>
+      </div>
+
+    <script >
+
+let apiResponse=[];
+
+let currSearch="Sandwhich";
+const APP_ID="72b759e9";
+const APP_KEY="91ca6d8205ca79ceb94a852ea8d81ad5";
+var page=0;
+var perPage=4;
+
+function getIngredients(ingredients){
+
+    let s="";
+    for(let ingredient of ingredients){
+   s=s+ingredient;
+     }
+
+     return s;
+}
+   
+   async function fetchData(currSearch){
+
+        var url=`https://api.edamam.com/search?q=${currSearch}&app_id=${APP_ID}&app_key=${APP_KEY}`
+
+
+
+let temp = await fetch(url);
+let response= await temp.json();
+apiResponse=response
+// console.log(response);
+
+generateList();
+
+
+   }
+
+   function generateList(){
+
+    let str=``;
+let min=page*perPage;
+let max=min+perPage;
+
+let recipe=apiResponse.hits;
+// console.log(recipe.length);
+for(let i=min;i<Math.min(max,recipe.length);i++){
+    // console.log(receipe);
+    str=str+`  <div class="card my-5 mx-5" style="width: 18rem;">
+            <img src="${recipe[i].recipe.image}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">${recipe[i].recipe.label}</h5>
+              <p class="card-text">${getIngredients(recipe[i].recipe.ingredientLines)}</p>
+             
+            </div>
+          </div>`
+}
+
+document.querySelector(".recipeContent").innerHTML=str;
+   }
+
+   fetchData(currSearch);
+
+   search.addEventListener("click",()=>{
+    e.preventDefault();
+    let val=input.value;
+    currSearch=val;
+    fetchData(currSearch);
+   })
+  
+   previous.addEventListener("click",()=>{
+    
+
+    
+    if(page>0){
+    page--;
+
+generateList();
+    }
+
+   })
+  
+   next.addEventListener("click",(e)=>{
+
+ page++;
+ generateList();
+   })
+    </script>
+    
+</body>
+
+
+</html>
+
