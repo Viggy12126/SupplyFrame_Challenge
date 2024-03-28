@@ -15,13 +15,13 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="index.html" target="_blank">News app link</a>
+                  <a class="nav-link active" aria-current="page" href="../index.html" target="_blank">News app link</a>
                 </li>
-                </ul>
-            <form class="d-flex" role="search">
-              <input id="input" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                </ul> -->
+            <form action="/search" method="post" class="d-flex" role="search">
+              <input id="input" name="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
               <button id="search" class="btn btn-outline-success" type="submit">Search</button>
             </form>
           </div>
@@ -33,16 +33,29 @@
         <div class="row recipeContent">
 
        
-        <div class="card my-5 mx-5" style="width: 18rem;">
+        <!-- <div class="card my-5 mx-5" style="width: 18rem;">
             <img src="..." class="card-img-top" alt="...">
             <div class="card-body">
               <h5 class="card-title">Card title</h5>
               <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               <a href="#" class="btn btn-primary">Go somewhere</a>
             </div>
-          </div>
+          </div> -->
 
-        
+          <% data.forEach(recipe => { %>
+            <div class="card my-5 mx-5" style="width: 18rem;">
+                <img src="<%= recipe.recipe.image %>" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title"><%= recipe.recipe.label %></h5>
+                    <p class="card-text">
+                        Ingredients:
+                        <% recipe.recipe.ingredientLines.forEach(ingredient => { %>
+                            <%= ingredient %><br>
+                        <% }); %>
+                    </p>
+                </div>
+            </div>
+        <% }); %>
 
         </div>
  <div class="d-flex justify-content-around">
@@ -55,7 +68,9 @@
 
 let apiResponse=[];
 
-let currSearch="Sandwhich";
+// let currSearch="Sandwhich";
+
+let currSearch = "<%= currSearch %>";
 const APP_ID="72b759e9";
 const APP_KEY="91ca6d8205ca79ceb94a852ea8d81ad5";
 var page=0;
@@ -72,8 +87,6 @@ function getIngredients(ingredients){
 }
    
    async function fetchData(currSearch){
-
-    document.querySelector(".recipeContent").innerHTML=`<h1>Loading...</h1>`
 
         var url=`https://api.edamam.com/search?q=${currSearch}&app_id=${APP_ID}&app_key=${APP_KEY}`
 
@@ -114,18 +127,17 @@ document.querySelector(".recipeContent").innerHTML=str;
 
    fetchData(currSearch);
 
-   search.addEventListener("click",(e)=>{
+   search.addEventListener("click",()=>{
     e.preventDefault();
     let val=input.value;
+    console.log(val);
     currSearch=val;
     fetchData(currSearch);
    })
   
    previous.addEventListener("click",()=>{
     
-
-    
-    if(page>0){
+if(page>0){
     page--;
 
 generateList();
