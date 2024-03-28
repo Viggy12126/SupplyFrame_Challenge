@@ -29,7 +29,8 @@ try {
 
     const response = await fetch(url);
     const data = await response.json();
-
+     
+    // console.log(data);
    
     res.render("recipe", { data: data.hits, currSearch:currSearch }); 
 } catch (error) {
@@ -62,6 +63,8 @@ app.post("/search", async (req, res) => {
     }
 });
 
-app.listen(PORT,()=>{
+const server =app.listen(PORT,()=>{
     console.log(`Server is listenting on PORT ${PORT}`);
 })
+
+module.exports=server;
